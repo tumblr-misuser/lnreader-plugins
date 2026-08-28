@@ -218,6 +218,8 @@ export class LightNovelWPPlugin implements Plugin.PluginBase {
           isParsingChapterList = true;
         } else if (isParsingChapterList && name === 'li') {
           isReadingChapter = true;
+          isPaidChapter = false;
+          hasLockItemOnChapterNum = false;
         } else if (isReadingChapter) {
           if (name === 'a' && tempChapter.path === undefined) {
             tempChapter.path = attribs['href'].replace(baseURL, '').trim();
@@ -229,6 +231,11 @@ export class LightNovelWPPlugin implements Plugin.PluginBase {
             isReadingChapterInfo = 3;
           } else if (attribs['class'] === 'epl-price') {
             isReadingChapterInfo = 4;
+          } else if (
+            name === 'img' &&
+            attribs['alt']?.toLowerCase() === 'locked'
+          ) {
+            isPaidChapter = true;
           }
         } else if (isReadingSummary && (name === 'div' || name === 'script')) {
           isReadingSummary++;
